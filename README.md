@@ -90,19 +90,176 @@ Here's a brief overview of the Terraform files in this project:
 
  - variables.tf: Declares the variables used in the Terraform configuration.
 
- - vpc.tf: Creates the VPC, subnets, internet gateway, and route tables.  
+ - vpc.tf: Creates the VPC, subnets, internet gateway, and route tables.
+
+## Creating RDS DB using Terraform Modules (RDS Snapshot Alternative)
+
+ - If you are not planning on using (or lack of) an RDS snapshot on your AWS account here is the terraform module to do so. I will refrain from adding this .tf file to the project since I don't want any confusion.
+```
+ - # configured aws provider with proper credentials
+provider "aws" {
+  region  = "us-east-1"
+  profile = "terraform-user"
+}
+
+
+# create default vpc if one does not exit
+resource "aws_default_vpc" "default_vpc" {
+
+  tags = {
+    Name = "default vpc"
+  }
+}
+
+
+# use data source to get all avalablility zones in region
+data "aws_availability_zones" "available_zones" {}
+
+
+# create a default subnet in the first az if one does not exit
+resource "aws_default_subnet" "subnet_az1" {
+  availability_zone = data.aws_availability_zones.available_zones.names[0]
+}
+
+# create a default subnet in the second az if one does not exit
+resource "aws_default_subnet" "subnet_az2" {
+  availability_zone = data.aws_availability_zones.available_zones.names[1]
+}
+
+# create security group for the web server
+resource "aws_security_group" "webserver_security_group" {
+  name        = "webserver security group"
+  description = "enable http access on port 80"
+  vpc_id      = aws_default_vpc.default_vpc.id
+
+ #inbound rules
+  ingress {
+    description      = "http access"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+#outbound rules
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = -1
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags   = {
+    Name = "webserver security group"
+  }
+}
+
+# create security group for the database
+resource "aws_security_group" "database_security_group" {
+  name        = "database security group"
+  description = "enable mysql/aurora access on port 3306"
+  vpc_id      = aws_default_vpc.default_vpc.id
+
+  ingress {
+    description      = "mysql/aurora access"
+    from_port        = 3306
+    to_port          = 3306
+    protocol         = "tcp"
+    security_groups  = [aws_security_group.webserver_security_group.id]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = -1
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+
+  tags   = {
+    Name = "database security group"
+  }
+}
+
+
+# create the subnet group for the rds instance
+resource "aws_db_subnet_group" "database_subnet_group" {
+  name         = "database-subnets"
+  subnet_ids   = [aws_default_subnet.subnet_az1.id, aws_default_subnet.subnet_az2.id]
+  description  = "subnets for database instance"
+
+  tags   = {
+    Name = "database-subnets"
+  }
+}
+
+
+# create the rds instance
+resource "aws_db_instance" "db_instance" {
+  engine                  = "mysql"
+  engine_version          = "8.0.31"
+  multi_az                = false
+  identifier              = "dev-rds-instance"
+  username                = "adoomabd" #create username
+  password                = "adoom123" #create password
+  instance_class          = "db.t3.micro" #review what class works best for you 
+  allocated_storage       = 200
+  db_subnet_group_name    = aws_db_subnet_group.database_subnet_group.name
+  vpc_security_group_ids  = [aws_security_group.database_security_group.id]
+  availability_zone       = data.aws_availability_zones.available_zones.names[0]
+  db_name                 = "applicationdb"
+  skip_final_snapshot     = true #this will make it so an additional snapshot is not created after every stoppage of this instance
+}
+
+```
 
 ## How to Use
+This section provides a step-by-step guide on how to deploy the dynamic web application infrastructure using the Terraform code in this repository.
 
-1. Clone this repository to your local machine.
-2. Follow the AWS documentation to create the required resources (VPC, subnets, Internet Gateway, etc.) as outlined in the architecture overview.
-3. Use the provided scripts to set up the WordPress application on EC2 instances within the VPC.
-4. Configure the Auto Scaling Group, Load Balancer, and other services as per the architecture.
-5. Access the WordPress website through the Load Balancer's DNS name.
+ - Prerequisites
+   * An AWS account with appropriate permissions to create and manage the required resources.
+   * Terraform installed on your local machine. You can download it from the official Terraform website: https://www.terraform.io/downloads.html   
+   * Configure your AWS credentials. You can do this by setting up environment variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) or using an AWS credentials file.
+    
+## Deployment Steps
 
+ - Clone the Repository using the following command:
+   * git clone [https://github.com/adoomabd/AdamAbdelrahim-Terraform-ECS-Project.git](https://github.com/AdamAbdelrahim/AdamAbdelrahim-Terraform-ECS-Project)
+ - Navigate to the Project Directory
+
+ - Change your current directory to the cloned repository using the following command:
+   * cd rentzone-terraform-ecs-project
+    
+ - Initialize Terraform and download necessary providers using the following command:
+   * terraform init
+ - Review the Terraform Plan. Before applying the changes, review the Terraform plan to see what resources will be created or modified.
+
+ - If you're satisfied with the plan, apply the configuration to create the infrastructure:
+   * terraform apply
+ - Terraform will prompt you to confirm the changes. Type yes and press Enter to proceed.
+
+ - Access the Application. Once the deployment is complete, you can access the web application through the Application Load Balancer's DNS name. The DNS name will be available in the Terraform output after the terraform apply command completes.
+
+## Additional Notes
+
+ - You can customize the deployment by modifying the variables in the terraform.tfvars file.
+ - Pay attention to capitalization as certain words and values are CAPS-locked, "TCP" and "tcp" are not the same.
+ - Pay attention to any notes within the .tf files, comments are included to help aid and guide the user with specific Terraform functions and modules.
+
+ - To destroy the infrastructure and clean up the resources, run the following command:
+  * terraform destroy
+
+Credit to AOSNotes for helping me complete this project.
+
+## Issues I Ran Into
+- Terraform State Lock Issue. I faced an issue with Terraform state locking, likely caused by interrupting a previous Terraform apply process by closing the terminal mid-way. This prevented Terraform from releasing the lock on the state file in DynamoDB, causing subsequent Terraform apply commands to fail.
+
+- To resolve this, I had to force unlock the state file using the following command:
+   * terraform force-unlock (id of issue)
+- Afterwards, I had to delete (in this instance) the RDS and ACM requests within the AWS management console and reprovision these resources using the Terraform command:
+   * terraform apply -target=((resourcetype)(resourcename))
 ## Contributing
 
 Contributions to this project are welcome! Please fork the repository and submit a pull request with your enhancements.
+
 
 ## AWS Configuration + Website Example
 ![Alt text](AWSResources1.PNG)
