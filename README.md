@@ -40,17 +40,17 @@ The Dynamic Web Application is deployed on AWS using Terraform, Docker, ECR, and
 
  - **Application Load Balancer (ALB):** Distributes incoming web traffic across multiple targets, such as the ECS in this instance running the application, ensuring high availability and fault tolerance. Within this project's ALB, a listener is configured for both the HTTP/HTTPS (80/443) ports while monitored health is performed continuously.
 
- - **Amazon ECS (Elastic Container Service):** A fully managed container orchestration service capable of deploying, managing, and scaling containerized applications.
+ - **Amazon ECS (Elastic Container Service):** A fully managed container orchestration service capable of deploying, managing, and scaling containerized applications. Within this project deploying a web application through ECS allows us to scale web applications, perform batch processing, and run services through Virtual Machine Clusters.
 
- - **ECS Cluster:** A logical grouping of ECS container instances that host the application.
+     * **ECS Cluster:** A logical grouping of ECS container instances that host the application.
 
- - **ECS Task Definitions:** Blueprints for this application, defining the Docker image to use, resource requirements, and other configurations (IAM policies/roles), .    
+     * **ECS Task Definitions:** Blueprints for this application, defining the Docker image to use, resource requirements, and other configurations (IAM policies/roles), .    
 
- - **ECS Services:**  Manage the launch and scaling of tasks based on your defined task definitions.    
+     * **ECS Services:**  Manage the launch and scaling of tasks based on your defined task definitions.    
 
  - **Amazon ECR (Elastic Container Registry):** A fully managed Docker container registry that will store, manage, and deploy Docker images. Within this project, I used a previously stored container in the Amazon Elastic Container Repository.    
 
- - **Amazon RDS (Relational Database Service):** A managed relational database service that makes it easy to set up, operate, and scale a relational database in the cloud. Within this project, a snapshot is used as disaster recovery, acting as a backup to restore data in case of unforeseen events.  Snapshots allow for the quick creation of copies for testing and development without affecting the live environment.  Additionally, snapshots enable data migration and provide a historical record for compliance and auditing.  
+ - **Amazon RDS (Relational Database Service):** A managed relational database service that makes it easy to set up, operate, and scale a relational database in the cloud. Within this project, a snapshot is used for disaster recovery, acting as a backup to restore data in case of unforeseen events.  Snapshots allow for the quick creation of copies for testing and development without affecting the live environment.  Additionally, snapshots enable data migration and provide a historical record for compliance and auditing.  
 
  - **AWS Certificate Manager (ACM):**  Handles the complexity of creating and managing SSL/TLS certificates for your application, ensuring secure communication.    
 
@@ -94,7 +94,7 @@ Here's a brief overview of the Terraform files in this project:
 
 ## Creating RDS DB using Terraform Modules (RDS Snapshot Alternative)
 
- - If you are not planning on using (or lack of) an RDS snapshot on your AWS account here is the terraform module to do so. I will refrain from adding this .tf file to the project since I don't want any confusion.
+ - If you are not planning on using (or lack of) an RDS snapshot on your AWS account here is the terraform module to do so. I will refrain from adding this .tf file to the project folder to minimize confusion.
 ```
  - # configured aws provider with proper credentials
 provider "aws" {
