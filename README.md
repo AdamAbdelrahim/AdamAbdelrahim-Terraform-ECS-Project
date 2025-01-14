@@ -1,4 +1,4 @@
-![Alt text](DeployingWordPressWebsiteUsingAWSArchitecture.png)
+![Alt text](TerraformECS.png)
 ---
 
 # Deploying a Dynamic Web Application on AWS with Terraform, Docker, Amazon ECR, and ECS
