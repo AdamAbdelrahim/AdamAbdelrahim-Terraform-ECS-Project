@@ -1,4 +1,4 @@
-![Alt text](TerraformECS.png)
+![Alt text](TerraformECS.PNG)
 ---
 
 # Deploying a Dynamic Web Application on AWS with Terraform, Docker, Amazon ECR, and ECS
