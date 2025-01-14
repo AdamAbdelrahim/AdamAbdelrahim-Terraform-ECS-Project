@@ -15,7 +15,7 @@ This repository contains Terraform Modules required to deploy and host a dynamic
  - **Containerized Application:** Docker encapsulates the web application, making it platform-independent and easy to deploy.
  - **Scalable and Reliable:** ECS enables dynamic application scaling based on demand, ensuring high availability and performance.
  - **Secure Deployment:** ECR provides a private registry for storing and managing Docker images, enhancing security.
- - **Reproducible Environment:** The entire infrastructure and application deployment are codified in Terraform, allowing for easy replication and disaster recovery.
+ - **Reproducible Environment:** The entire infrastructure and application deployment is coded in Terraform, allowing for easy replication and disaster recovery.
 ### Benefits:
 
  - **Simplified Deployment:** Streamlines deploying complex web applications on AWS.
@@ -222,18 +222,18 @@ This section provides a step-by-step guide on how to deploy the dynamic web appl
 ## Deployment Steps
 
  - Clone the Repository using the following command:
-   * git clone [https://github.com/adoomabd/AdamAbdelrahim-Terraform-ECS-Project.git](https://github.com/AdamAbdelrahim/AdamAbdelrahim-Terraform-ECS-Project)
+   * **git clone [https://github.com/adoomabd/AdamAbdelrahim-Terraform-ECS-Project.git](https://github.com/AdamAbdelrahim/AdamAbdelrahim-Terraform-ECS-Project)**
  - Navigate to the Project Directory
 
  - Change your current directory to the cloned repository using the following command:
-   * cd AdamAbdelrahim-Terraform-ECS-Project
+   * **cd AdamAbdelrahim-Terraform-ECS-Project**
     
  - Initialize Terraform and download necessary providers using the following command:
-   * terraform init
+   * **terraform init**
  - Review the Terraform Plan. Before applying the changes, review the Terraform plan to see what resources will be created or modified.
 
  - If you're satisfied with the plan, apply the configuration to create the infrastructure:
-   * terraform apply
+   * **terraform apply**
  - Terraform will prompt you to confirm the changes. Type yes and press Enter to proceed.
 
  - Access the Application. Once the deployment is complete, you can access the web application through the Application Load Balancer's DNS name. The DNS name will be available in the Terraform output after the terraform apply command completes.
@@ -245,7 +245,7 @@ This section provides a step-by-step guide on how to deploy the dynamic web appl
  - Pay attention to any notes within the .tf files, comments are included to help aid and guide the user with specific Terraform functions and modules.
 
  - To destroy the infrastructure and clean up the resources, run the following command:
-  * terraform destroy
+    * **terraform destroy**
 
 
 
@@ -253,9 +253,9 @@ This section provides a step-by-step guide on how to deploy the dynamic web appl
 - Terraform State Lock Issue. I faced an issue with Terraform state locking, likely caused by interrupting a previous Terraform apply process by closing the terminal mid-way. This prevented Terraform from releasing the lock on the state file in DynamoDB, causing subsequent Terraform apply commands to fail.
 
 - To resolve this, I had to force unlock the state file using the following command:
-   * terraform force-unlock (id of issue)
+   * **terraform force-unlock (id of issue)**
 - Afterwards, I had to delete (in this instance) the RDS and ACM requests within the AWS management console and reprovision these resources using the Terraform command:
-   * terraform apply -target=((resourcetype)(resourcename))
+   * **terraform apply -target=((resourcetype)(resourcename))**
 ## Contributing
 
 Contributions to this project are welcome! Please fork the repository and submit a pull request with your enhancements.
