@@ -263,11 +263,11 @@ Contributions to this project are welcome! Please fork the repository and submit
 Credit to AOSNotes for helping me complete this project.
 
 ## AWS Management Console Configuration 
-![Alt text](AWSResources1.PNG)
-![Alt text](AWSResources2.PNG)
-![Alt text](AWSResources3.PNG)
-![Alt text](AWSResources4.PNG)
-![Alt text](AWSResources5.PNG)
-![Alt text](DevelopedWebsite.PNG)
+![Alt text](TerraResource1.PNG)
+![Alt text](TerraResource2.PNG)
+![Alt text](TerraResource3.PNG)
+![Alt text](TerraResource4.PNG)
+![Alt text](TerraResource5.PNG)
+![Alt text](TerraResource6.PNG)
 
 
