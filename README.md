@@ -1,4 +1,4 @@
-![Alt text](TerraformECS.PNG)
+F![Alt text](TerraformECS.PNG)
 ---
 
 # Deploying a Dynamic Web Application on AWS with Terraform, Docker, Amazon ECR, and ECS
@@ -30,7 +30,7 @@ The Dynamic Web Application is deployed on AWS using Terraform, Docker, ECR, and
 
  - **Virtual Private Cloud (VPC):** This project utilizes Terraform to automate the deployment of a dynamic web application on AWS.  The application is containerized using Docker and deployed on an ECS cluster within a secure and scalable VPC.  Key features include a 3-tier network architecture, an Application Load Balancer, and an RDS database instance. 
    * This VPC is set up with public and private subnets across two Availability Zones (AZs) for fault tolerance and high availability. It is important to note within this project, the multi_az_deployment variable in the terraform.tfvars file is set to false, meaning  there is only one primary database instance in a single AZ. While this simplifies the deployment, it means that if the AZ where the database resides experiences an outage, the database will become unavailable.  
- - **Subnets:** Subdivisions of the VPC that allow you to group resources based on their security and access needs. This project utilizes:
+ - **Subnets:** Subdivisions of the VPC that will allow us to group resources based on their security and access needs. This project utilizes:
    * **Public Subnets:** For internet-facing resources like the Application Load Balancer (ALB) and NAT Gateways.    
    * **Private Subnets:** For internal resources like the ECS cluster and RDS database, enhancing security.    
  - **Internet Gateway:** Enables communication between resources in VPC and the internet.    
